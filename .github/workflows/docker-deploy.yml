@@ -1,0 +1,26 @@
+name: DOCKER-DEPLOY
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    # Docker build
+    - name: Build docker image
+      run: |
+        docker build -f docker/Dockerfile -t github-deploy:latest .
+
+    # Docker push to dockerhub
+    - name: Push image to DockerHub
+      if: github.event_name == 'push'
+      run: |
+        IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/github-deploy:latest"
+        docker tag github-deploy:latest $IMAGE
+        docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+        docker push $IMAGE
