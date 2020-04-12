@@ -14,7 +14,7 @@ jobs:
     # Docker build
     - name: Build docker image
       run: |
-        docker build -f docker/Dockerfile -t github-deploy:latest .
+        docker build -t github-deploy:latest .
 
     # Docker push to dockerhub
     - name: Push image to DockerHub
