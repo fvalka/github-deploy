@@ -14,7 +14,7 @@ if [ -z "$(ls -A)" ]; then
    exit 3
 fi
 
-cp -r . /tmp/deploy
+cp -r ./$1 /tmp/deploy
 cd /tmp/deploy
 
 REMOTE_URL="https://x-access-token:${ACCESS_TOKEN}@github.com/${REPO}.git"
