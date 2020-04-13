@@ -1,4 +1,6 @@
 #!/bin/sh
+
+# Validate input
 if [[ -z "$ACCESS_TOKEN" ]]; then
     echo "ERROR: ACCESS_TOKEN not set, please set the environment variable" >&2
     exit 1
@@ -14,14 +16,7 @@ if [ -z "$(ls -A)" ]; then
    exit 3
 fi
 
-cp -r ./$1 /tmp/deploy
-cd /tmp/deploy
-
-REMOTE_URL="https://x-access-token:${ACCESS_TOKEN}@github.com/${REPO}.git"
-git init
-git remote add origin $REMOTE_URL
-git fetch
-
+# Default settings 
 if [[ -z "$BRANCH" ]]; then
     BRANCH="master"
     echo "Setting BRANCH to master, since no branch was set in the environment variables"
@@ -34,8 +29,18 @@ if [[ -z "$GIT_USER" ]]; then
     GIT_USER="Automated Merge"
 fi
 
+cp -r ./$1 /tmp/deploy
+cd /tmp/deploy
+
+REMOTE_URL="https://x-access-token:${ACCESS_TOKEN}@github.com/${REPO}.git"
+git init
+git remote add origin $REMOTE_URL
+git checkout -b $BRANCH
+git fetch
+
 git config --global user.email $GIT_EMAIL
 git config --global user.name $GIT_USER
+
 
 git add --all
 git commit -m "Automated deployment"
